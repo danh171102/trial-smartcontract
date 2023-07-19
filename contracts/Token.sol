@@ -9,17 +9,24 @@ contract Token {
     string public symbol = "DOG";
 
 
-    uint256 public totalSupply = 1000000;
-
+    uint256 public totalSupply = 10000000000;
+    uint256 countTotalSupply = 0;
     address public owner;
 
     mapping(address => uint256) balances;
 
-    event Transfer(address indexed _from, address indexed _to, uint256 _value);
-
     constructor() {
-        balances[msg.sender] = totalSupply;
         owner = msg.sender;
+    }
+    function mint(address _wallet, uint256 _mintamount) public {
+        require(msg.sender == owner, "you aren't owner");
+        countTotalSupply += _mintamount;
+        if(countTotalSupply >= totalSupply) {
+            return("over total supply!");
+        }
+        else {
+            _wallet.balance += _mintamount;
+        }
     }
 
     function transfer(address to, uint256 amount) external {
@@ -27,8 +34,6 @@ contract Token {
 
         balances[msg.sender] -= amount;
         balances[to] += amount;
-
-        emit Transfer(msg.sender, to, amount);
     }
 
     function balanceOf(address account) external view returns (uint256) {
