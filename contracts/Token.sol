@@ -13,20 +13,19 @@ contract Token {
     uint256 countTotalSupply = 0;
     address public owner;
 
-    mapping(address => uint256) balances;
+    mapping (address => uint256) public balances;
 
     constructor() {
         owner = msg.sender;
     }
+
     function mint(address _wallet, uint256 _mintamount) public {
         require(msg.sender == owner, "you aren't owner");
         countTotalSupply += _mintamount;
-        if(countTotalSupply >= totalSupply) {
-            return("over total supply!");
-        }
-        else {
-            _wallet.balance += _mintamount;
-        }
+        require(countTotalSupply <= totalSupply, "over total supply!");
+        balances[_wallet] += _mintamount;
+
+
     }
 
     function transfer(address to, uint256 amount) external {
