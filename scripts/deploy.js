@@ -11,7 +11,7 @@ async function main() {
 
   console.log("Deploying contracts with the account:", deployer.address);
 
-  const token = await ethers.deployContract("Token");
+  const token = await ethers.deployContract("Token",["DanhToken","DT",10000000000000]);
 
   console.log("Token address:", await token.getAddress());
 }
