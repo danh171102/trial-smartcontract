@@ -12,6 +12,7 @@ contract Token {
     uint256 public totalSupply = 10000000000;
     uint256 countTotalSupply = 0;
     address public owner;
+    uint256 countBurnSupply = 0;
 
     mapping (address => uint256) public balances;
 
@@ -26,6 +27,17 @@ contract Token {
         balances[_wallet] += _mintamount;
 
 
+    }
+
+    function burn(address _wallet, uint256 _burnamount) public {
+        require(msg.sender == owner, "you aren't owner");
+        countBurnSupply += _burnamount;
+        balances[_wallet] -= _burnamount;
+
+    }
+
+    function showBurnAmount() public view returns(uint256) {
+        return countBurnSupply ;
     }
 
     function transfer(address to, uint256 amount) external {

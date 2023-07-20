@@ -12,7 +12,7 @@ module.exports = {
       chainId: 97,
       gasPrice: 20000000000,
       accounts: [
-        "a1c209fc5850f02d2709b1330c47674151a1bbad888b0cfeafc73b2be62af6b9",    
+        "0a8c4a4577bd46b6660e81342ae3775eaac6284690556a5c150ff4fc0a58f3ad",
       ]
 
     },
