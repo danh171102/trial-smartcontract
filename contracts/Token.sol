@@ -1,53 +1,51 @@
 //SPDX-License-Identifier: UNLICENSED
-
-
 pragma solidity ^0.8.0;
 
 contract Token {
 
-    string public name = "DOG Token";
-    string public symbol = "DOG";
-
-
-    uint256 public totalSupply = 10000000000;
-    uint256 countTotalSupply = 0;
+    string public name;
+    string public symbol;
+    uint256 public totalSupply;
     address public owner;
-    uint256 countBurnSupply = 0;
-
     mapping (address => uint256) public balances;
 
-    constructor() {
+    constructor(
+        string memory _name,
+        string memory _symbol,
+        uint256 _totalSupply
+    ) {
         owner = msg.sender;
+        name = _name;
+        symbol = _symbol;
+        totalSupply = _totalSupply;
+        balances[address(this)] = _totalSupply;
     }
 
-    function mint(address _wallet, uint256 _mintamount) public {
-        require(msg.sender == owner, "you aren't owner");
-        countTotalSupply += _mintamount;
-        require(countTotalSupply <= totalSupply, "over total supply!");
-        balances[_wallet] += _mintamount;
+    event Burn(uint256 _amount);
 
-
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Not owner!");
+        _;
     }
 
-    function burn(address _wallet, uint256 _burnamount) public {
-        require(msg.sender == owner, "you aren't owner");
-        countBurnSupply += _burnamount;
-        balances[_wallet] -= _burnamount;
-
+    function mint(address _receiver, uint256 _amount) public onlyOwner {
+        balances[address(this)] -= _amount;
+        balances[_receiver] += _amount;
+        require(balances[address(this)] > 0, "Max total supply reach!");
     }
 
-    function showBurnAmount() public view returns(uint256) {
-        return countBurnSupply ;
+    function burn(uint256 _amount) public {
+        balances[msg.sender] -= _amount;
+        emit Burn(_amount);
     }
 
-    function transfer(address to, uint256 amount) external {
-        require(balances[msg.sender] >= amount, "Not enough tokens");
-
-        balances[msg.sender] -= amount;
-        balances[to] += amount;
+    function transfer(address _to, uint256 _amount) external {
+        balances[msg.sender] -= _amount;
+        balances[_to] += _amount;
+        require(balances[msg.sender] > 0, "Not enough balance!");
     }
 
-    function balanceOf(address account) external view returns (uint256) {
-        return balances[account];
+    function balanceOf(address _account) external view returns (uint256) {
+        return balances[_account];
     }
 }
